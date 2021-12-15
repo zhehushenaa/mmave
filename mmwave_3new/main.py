@@ -198,7 +198,7 @@ def parserdata():
     dataIn = dataCom.read(numBytes)
     dataCom.reset_input_buffer()
 
-    # print ("data:",dataIn)
+    print ("data:",dataIn)
     # print (dataIn[:8])
     # print(time.strftime("%Y-%m-%d-%H_%M_%S", time.localtime()))
 
@@ -207,7 +207,7 @@ def parserdata():
             'Q9I2H', dataIn[:headerLength])
         dataIn = dataIn[48:]
         print ("numTLVs:",numTLVs)
-
+        tlvType=0
         for i in range(numTLVs):
             # try:
             # print("DataIn Type", type(dataIn))
@@ -500,17 +500,17 @@ if __name__ == '__main__':
     # serial = serial.Serial('COM10', 921600, timeout=0.5) #/dev/ttyUSB0
     # dataCom = serial.Serial('/dev/ttyACM1', 921600,parity=serial.PARITY_NONE,stopbits=serial.STOPBITS_ONE,timeout=0.1)
     # uartCom = serial.Serial('/dev/ttyACM0', 115200,parity=serial.PARITY_NONE,stopbits=serial.STOPBITS_ONE,timeout=0.2)
-    dataCom = serial.Serial('COM13', 921600,parity=serial.PARITY_NONE,stopbits=serial.STOPBITS_ONE,timeout=0.05)
-    uartCom = serial.Serial('COM12', 115200,parity=serial.PARITY_NONE,stopbits=serial.STOPBITS_ONE,timeout=0.2)
+    dataCom = serial.Serial('COM10', 115200,parity=serial.PARITY_NONE,stopbits=serial.STOPBITS_ONE,timeout=0.05)
+    uartCom = serial.Serial('COM11', 115200,parity=serial.PARITY_NONE,stopbits=serial.STOPBITS_ONE,timeout=0.2)
     poszlist=[]
     velzlist=[]
     acczlist=[]
     #
-    if uartCom.isOpen():
-         print ("uartcom open success!")
-         sendCfg()
-    else:
-         print ("uartcom open failed ")
+    # if uartCom.isOpen():
+    #      print ("uartcom open success!")
+    #      sendCfg()
+    # else:
+    #      print ("uartcom open failed ")
 
     # senddataweb_test()
     if dataCom.isOpen() :
@@ -523,25 +523,24 @@ if __name__ == '__main__':
             pm=parserdata()
             print(time.strftime("%Y-%m-%d-%H_%M_%S", time.localtime()))
             #
-            if pm is not None:
-                nopeopletime = 0
-                # fall_detection(pm)
-                turtledisplay(pm)
-                # fall_detection(pm, poszlist, velzlist, acczlist)
-                senddataweb(pm, P, alarm)
-                ppp=ppp+1
-            else:
-
-                nopeopletime=nopeopletime+1
-                if nopeopletime==10:
-                    allmaxpoints =[]
-                    originalbitheight=0
-
-                    bit=1
-
-                    turtleList=[]
-
-                    turtle.clearscreen()
+            # if pm is not None:
+            #     nopeopletime = 0
+            #     # fall_detection(pm)
+            #     turtledisplay(pm)
+            #     # fall_detection(pm, poszlist, velzlist, acczlist)
+            #     senddataweb(pm, P, alarm)
+            #     ppp=ppp+1
+            # else:
+            #     nopeopletime=nopeopletime+1
+            #     if nopeopletime==10:
+            #         allmaxpoints =[]
+            #         originalbitheight=0
+            #
+            #         bit=1
+            #
+            #         turtleList=[]
+            #
+            #         turtle.clearscreen()
 
 
                     # senddataweb(pm,P,alarm)

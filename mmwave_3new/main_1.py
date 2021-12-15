@@ -71,73 +71,73 @@ def tlvHeaderDecode(data):
 
 
 
-def parsePointcloud(dataIn,tlvLength):
-    global allmaxpoints
-    ttt=[]
-
-
-    pUnitStruct = '5f'  # elev, azim, doppler, range, snr
-    pUnitSize = struct.calcsize(pUnitStruct)
-    pUnit = struct.unpack(pUnitStruct, dataIn[:pUnitSize])
-    dataIn = dataIn[pUnitSize:]
-    objStruct = '2bh2H'  # 2 int8, 1 int16, 2 uint16
-    objSize = struct.calcsize(objStruct)
-    numDetectedObj = int((tlvLength - pUnitSize) / objSize)
-    pcPolar = np.zeros((5, maxPoints))
-    # if (self.printVerbosity == 1):
-    print('Parsed Points: ', numDetectedObj)
-    for i in range(numDetectedObj):
-        try:
-            elev, az, doppler, ran, snr = struct.unpack(objStruct, dataIn[:objSize])
-            dataIn = dataIn[objSize:]
-            # get range, azimuth, doppler, snr
-            pcPolar[0, i] = ran * pUnit[3]
-            if (az >= 128):
-                print('Az greater than 127')
-                az -= 256
-            if (elev >= 128):
-                print('Elev greater than 127')
-                elev -= 256
-            if (doppler >= 32768):
-                print('Doppler greater than 32768')
-                doppler -= 65536
-
-            pcPolar[1, i] = az * pUnit[1]  # azimuth
-            pcPolar[2, i] = elev * pUnit[0]  # elevation
-            pcPolar[3, i] = doppler * pUnit[2]  # doppler
-            pcPolar[4, i] = snr * pUnit[4]  # snr
-        except:
-                # numDectedObj = i
-                print('failed to get point cloud')
-                break
-
-
-
-    pcBufPing = np.empty((5,numDetectedObj))
-    for n in range(0, numDetectedObj):
-        pcBufPing[2,n] = pcPolar[0,n]*math.sin(pcPolar[2,n]) #z
-        pcBufPing[0,n] = pcPolar[0,n]*math.cos(pcPolar[2,n])*math.sin(pcPolar[1,n]) #x
-        pcBufPing[1,n] = pcPolar[0,n]*math.cos(pcPolar[2,n])*math.cos(pcPolar[1,n]) #y
-    pcBufPing[3,:] = pcPolar[3,0:numDetectedObj] #doppler
-    pcBufPing[4,:] = pcPolar[4,0:numDetectedObj] #snr
-
-
-    for n in range(0, numDetectedObj):
-        ttt.append(pcBufPing[2,n])
-        # print(pcBufPing[3, n])
-        # print(pcBufPing[4, n])
-    # print ("最大值：")
-    # print (max(ttt))
-    # # allmaxpoints=[]
-    # allmaxpoints.append(max(ttt))
-    # if len(allmaxpoints)>=30:
-    #     print ("....")
-    #     if allmaxpoints[28]>(allmaxpoints[29]+0.5):
-    #         print ("跌倒啦！！")
-    #
-    #     # print ("跌倒变化：")
-    #     # print ((sum(allmaxpoints[:15]))/15-max(ttt))
-    #     allmaxpoints=allmaxpoints[1:]
+# def parsePointcloud(dataIn,tlvLength):
+#     global allmaxpoints
+#     ttt=[]
+#
+#
+#     pUnitStruct = '5f'  # elev, azim, doppler, range, snr
+#     pUnitSize = struct.calcsize(pUnitStruct)
+#     pUnit = struct.unpack(pUnitStruct, dataIn[:pUnitSize])
+#     dataIn = dataIn[pUnitSize:]
+#     objStruct = '2bh2H'  # 2 int8, 1 int16, 2 uint16
+#     objSize = struct.calcsize(objStruct)
+#     numDetectedObj = int((tlvLength - pUnitSize) / objSize)
+#     pcPolar = np.zeros((5, maxPoints))
+#     # if (self.printVerbosity == 1):
+#     print('Parsed Points: ', numDetectedObj)
+#     for i in range(numDetectedObj):
+#         try:
+#             elev, az, doppler, ran, snr = struct.unpack(objStruct, dataIn[:objSize])
+#             dataIn = dataIn[objSize:]
+#             # get range, azimuth, doppler, snr
+#             pcPolar[0, i] = ran * pUnit[3]
+#             if (az >= 128):
+#                 print('Az greater than 127')
+#                 az -= 256
+#             if (elev >= 128):
+#                 print('Elev greater than 127')
+#                 elev -= 256
+#             if (doppler >= 32768):
+#                 print('Doppler greater than 32768')
+#                 doppler -= 65536
+#
+#             pcPolar[1, i] = az * pUnit[1]  # azimuth
+#             pcPolar[2, i] = elev * pUnit[0]  # elevation
+#             pcPolar[3, i] = doppler * pUnit[2]  # doppler
+#             pcPolar[4, i] = snr * pUnit[4]  # snr
+#         except:
+#                 # numDectedObj = i
+#                 print('failed to get point cloud')
+#                 break
+#
+#
+#
+#     pcBufPing = np.empty((5,numDetectedObj))
+#     for n in range(0, numDetectedObj):
+#         pcBufPing[2,n] = pcPolar[0,n]*math.sin(pcPolar[2,n]) #z
+#         pcBufPing[0,n] = pcPolar[0,n]*math.cos(pcPolar[2,n])*math.sin(pcPolar[1,n]) #x
+#         pcBufPing[1,n] = pcPolar[0,n]*math.cos(pcPolar[2,n])*math.cos(pcPolar[1,n]) #y
+#     pcBufPing[3,:] = pcPolar[3,0:numDetectedObj] #doppler
+#     pcBufPing[4,:] = pcPolar[4,0:numDetectedObj] #snr
+#
+#
+#     for n in range(0, numDetectedObj):
+#         ttt.append(pcBufPing[2,n])
+#         # print(pcBufPing[3, n])
+#         # print(pcBufPing[4, n])
+#     # print ("最大值：")
+#     # print (max(ttt))
+#     # # allmaxpoints=[]
+#     # allmaxpoints.append(max(ttt))
+#     # if len(allmaxpoints)>=30:
+#     #     print ("....")
+#     #     if allmaxpoints[28]>(allmaxpoints[29]+0.5):
+#     #         print ("跌倒啦！！")
+#     #
+#     #     # print ("跌倒变化：")
+#     #     # print ((sum(allmaxpoints[:15]))/15-max(ttt))
+#     #     allmaxpoints=allmaxpoints[1:]
 
 
 
@@ -196,100 +196,131 @@ def parserdata():
 
     dataIn = dataCom.read(numBytes)
     dataCom.reset_input_buffer()
-
-    # print ("data:",dataIn)
+    # print (dataIn)
+    # print ("datalen:",len(dataIn))
     # print (dataIn[:8])
     # print(time.strftime("%Y-%m-%d-%H_%M_%S", time.localtime()))
 
-    if dataIn[:8] == b'\x02\x01\x04\x03\x06\x05\x08\x07':
+    if dataIn[:8] == b'\x02\x01\x04\x03\x06\x05\x08\x07' and len(dataIn)>108:
+
+
+
+        # print("<<<<<<")
+        # print(dataIn)
+        # print(">>>>>>")
+
         magic, version, packetLength, platform, frameNum, subFrameNum, chirpMargin, frameMargin, uartSentTime, trackProcessTime, numTLVs, checksum = struct.unpack(
             'Q9I2H', dataIn[:headerLength])
         dataIn = dataIn[48:]
-        print ("numTLVs:",numTLVs)
+        print("numTLVs:", numTLVs)
+        tlvType, tlvLength = tlvHeaderDecode(dataIn[:tlvHeaderLength])
 
-        for i in range(numTLVs):
-            # try:
-            # print("DataIn Type", type(dataIn))
-            try:
-                # print("<<<<<<")
-                # print(dataIn)
-                # print(">>>>>>")
-                tlvType, tlvLength = tlvHeaderDecode(dataIn[:tlvHeaderLength])
+        dataIn = dataIn[tlvHeaderLength:]
+        dataLength = tlvLength - tlvHeaderLength
+        print (tlvType)
+        if (tlvType == 7):
 
-                dataIn = dataIn[tlvHeaderLength:]
+            print (len(dataIn))
+            print("wennwennwne")
+            pmessage = parseDetectedTracksSDK3x(dataIn[:dataLength], dataLength)
+        # pmessage={0: (0.14, 0.78, -0.1078, -0.165, -0.1241, 0)}
+            print (pmessage)
+            return pmessage
+        else:
+            pmessage={}
+            return pmessage
 
-                dataLength = tlvLength - tlvHeaderLength
+            # dataLength = tlvLength - tlvHeaderLength
 
-            except:
-                print('TLV Header Parsing Failure')
-                fail = 1
-                # return dataIn
-            if (tlvType == 6):
-                print("-----2")
-                parsePointcloud(dataIn[:dataLength], dataLength)
+        # except:
+        #     print('TLV Header Parsing Failure')
 
-                # DPIF Polar Coordinates
-                # self.parseCapon3DPolar(dataIn[:dataLength], dataLength)
-            elif (tlvType == 7):
 
-                # target 3D
-                # a = a + 1
-                pmessage=parseDetectedTracksSDK3x(dataIn[:dataLength], dataLength)
-                # print (pmessage)
-                return pmessage
+        # for i in range(numTLVs):
+        #     # try:
+        #     # print("DataIn Type", type(dataIn))
+        #     try:
+        #         # print("<<<<<<")
+        #         # print(dataIn)
+        #         # print(">>>>>>")
+        #         tlvType, tlvLength = tlvHeaderDecode(dataIn[:tlvHeaderLength])
+        #
+        #         dataIn = dataIn[tlvHeaderLength:]
+        #
+        #         dataLength = tlvLength - tlvHeaderLength
+        #
+        #     except:
+        #         print('TLV Header Parsing Failure')
+        #         fail = 1
+        #         # return dataIn
+        #     if (tlvType == 6):
+        #         print("-----2")
+        #         parsePointcloud(dataIn[:dataLength], dataLength)
+        #
+        #         # DPIF Polar Coordinates
+        #         # self.parseCapon3DPolar(dataIn[:dataLength], dataLength)
+        #     elif (tlvType == 7):
+        #
+        #         # target 3D
+        #         # a = a + 1
+        #         pmessage=parseDetectedTracksSDK3x(dataIn[:dataLength], dataLength)
+        #         # print (pmessage)
+        #         return pmessage
+        #
+        #     dataIn = dataIn[dataLength:]
 
-            dataIn = dataIn[dataLength:]
+# 显示部分
+def turtledisplay(tdata):
+    global bit
+    print ("tdata")
+    print (tdata)
+    if bit == 1:
+        for k, v in tdata.items():
+            x = int(v[0] * 100)
+            y = int(v[1] * 100)
+            oldx.append(x)
+            oldy.append(y)
+            print("=========")
 
-#显示部分
-# def turtledisplay(tdata):
-#     global bit
-#     print ("tdata")
-#     print (tdata)
-#     if bit == 1:
-#         for k, v in tdata.items():
-#             x = int(v[0] * 100)
-#             y = int(v[1] * 100)
-#             oldx.append(x)
-#             oldy.append(y)
-#             print("=========")
-#
-#         bit=0
-#     for i in range(len(tdata)):
-#         turtleList.append(turtle.Turtle(shape='turtle'))
-#         # turtleList[i].speed('normal')
-#     for k, v in tdata.items():
-#         x = int(v[0] * 100)
-#         y = int(v[1] * 100)
-#
-#         if len(tdata) <= len(oldx):
-#             if abs(x - oldx[k]) < 1 or abs(y - oldy[k]) < 1:
-#                 updatex.append(oldx[k])
-#                 updatey.append(oldy[k])
-#             else:
-#                 updatex.append(x)
-#                 updatey.append(y)
-#
-#         else:
-#             updatex.append(x)
-#             updatey.append(y)
-#
-#         for i in range(len(updatex)):
-#             # turtleList[i].showturtle()
-#             turtleList[i].penup()
-#
-#             print ("updatex,updatey:")
-#             print (updatex[i],updatey[i])
-#             turtleList[i].goto(updatex[i], updatey[i])
-#
-#             # turtle.speed(3)
-#             # turtleList[i].delay(10)
-#         oldx.clear()
-#         oldy.clear()
-#         print("len:", str(len(updatex)))
-#
-#         for i in range(len(updatex)):
-#             oldx.append(updatex[i])
-#             oldy.append(updatey[i])
+        bit=0
+    for i in range(len(tdata)):
+        turtleList.append(turtle.Turtle(shape='turtle'))
+        # turtleList[i].speed('normal')
+    for k, v in tdata.items():
+        x = int(v[0] * 100)
+        y = int(v[1] * 100)
+
+        if len(tdata) <= len(oldx):
+            if abs(x - oldx[k]) < 1 or abs(y - oldy[k]) < 1:
+                updatex.append(oldx[k])
+                updatey.append(oldy[k])
+            else:
+                updatex.append(x)
+                updatey.append(y)
+
+        else:
+            updatex.append(x)
+            updatey.append(y)
+
+        for i in range(len(updatex)):
+            # turtleList[i].showturtle()
+            turtleList[i].penup()
+
+            print ("updatex,updatey:")
+            print (updatex[i],updatey[i])
+            turtleList[i].goto(updatex[i], updatey[i])
+
+            # turtle.speed(3)
+            # turtleList[i].delay(10)
+        oldx.clear()
+        oldy.clear()
+        print("len:", str(len(updatex)))
+
+        for i in range(len(updatex)):
+            oldx.append(updatex[i])
+            oldy.append(updatey[i])
+
+
 
 
 
@@ -356,7 +387,35 @@ def fall_detection(data):
 
 
 
-#发送数据
+# 发送数据
+def senddataweb():
+    url="http://radar.kinsol.net/api/fall/alarm"
+    Time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+
+    msg= {
+        "json":"11",
+    }
+    js = json.dumps(msg)
+
+    try:
+        response = requests.post(url, data=js, timeout=50)
+        print(msg)
+        rescode = response.text
+        print(rescode)
+        rescode = rescode[8:11]
+        print (rescode)
+        if rescode == "200":
+            print("发送报警成功！")
+        else:
+            print("发送未成功！")
+
+            # break
+    except:
+        print("超时！")
+    sleep(5)
+
+
+
 # def senddataweb(pm,P,alarm):
 #     # print (pm)
 #     appid = "Tz6HqcR97CL9A8CqTim82ZIkZGFMBQ1h"
@@ -499,17 +558,17 @@ if __name__ == '__main__':
     # serial = serial.Serial('COM10', 921600, timeout=0.5) #/dev/ttyUSB0
     # dataCom = serial.Serial('/dev/ttyACM1', 921600,parity=serial.PARITY_NONE,stopbits=serial.STOPBITS_ONE,timeout=0.1)
     # uartCom = serial.Serial('/dev/ttyACM0', 115200,parity=serial.PARITY_NONE,stopbits=serial.STOPBITS_ONE,timeout=0.2)
-    dataCom = serial.Serial('COM13', 921600,parity=serial.PARITY_NONE,stopbits=serial.STOPBITS_ONE,timeout=0.05)
-    uartCom = serial.Serial('COM12', 115200,parity=serial.PARITY_NONE,stopbits=serial.STOPBITS_ONE,timeout=0.2)
+    dataCom = serial.Serial('COM10', 115200,parity=serial.PARITY_NONE,stopbits=serial.STOPBITS_ONE,timeout=0.05)
+    uartCom = serial.Serial('COM11', 115200,parity=serial.PARITY_NONE,stopbits=serial.STOPBITS_ONE,timeout=0.2)
     poszlist=[]
     velzlist=[]
     acczlist=[]
-    #
-    if uartCom.isOpen():
-         print ("uartcom open success!")
-         sendCfg()
-    else:
-         print ("uartcom open failed ")
+
+    # if uartCom.isOpen():
+    #      print ("uartcom open success!")
+    #      sendCfg()
+    # else:
+    #      print ("uartcom open failed ")
 
     # senddataweb_test()
     if dataCom.isOpen() :
@@ -520,15 +579,16 @@ if __name__ == '__main__':
 
             # parserdata()
             pm=parserdata()
-            print(time.strftime("%Y-%m-%d-%H_%M_%S", time.localtime()))
+
+            # print(time.strftime("%Y-%m-%d-%H_%M_%S", time.localtime()))
             #
             if pm is not None:
                 nopeopletime = 0
                 # fall_detection(pm)
                 turtledisplay(pm)
-                # fall_detection(pm, poszlist, velzlist, acczlist)
-                senddataweb(pm, P, alarm)
-                ppp=ppp+1
+            #     # fall_detection(pm, poszlist, velzlist, acczlist)
+            #     senddataweb(pm, P, alarm)
+            #     ppp=ppp+1
             else:
 
                 nopeopletime=nopeopletime+1
@@ -546,5 +606,17 @@ if __name__ == '__main__':
                     # senddataweb(pm,P,alarm)
     else :
         print(" datacom open failed!")
+    # while True:
+    #     senddataweb()
+    #     time.sleep(2)
 
 
+
+    # ss=b'\x02\x01\x04\x03\x06\x05\x08\x07\x04\x00\x05\x03\xb5\x00\x00\x00Ch\n\x00\x104\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xcd/\x00\x00\x1c\x00\x00\x009;\x00\x00\x02\x00\xab\xe4\x07\x00\x00\x00x\x00\x00\x00\x00\x00\x00\x00\xc3\x14\xef>\xbeb4?]\x8dC<\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00O\xcc\xff?\xa4\xd9m\xbd\xefd\xad\xbd\x7fK\x87\xbd\xa4\xd9m\xbd\x8cS\xa4@\x1b\x84\xdf\xbd;\xe6\x1d\xbe\xefd\xad\xbd\x1b\x84\xdf\xbd[B\x9e@\xe9"\xe3\xbd\x7fK\x87\xbd;\xe6\x1d\xbe\xe9"\xe3\xbd^\x9dR@\x00\x00@@\xe0\xff\x7f?\x02\x01\x04\x03\x06\x05\x08\x07'
+    # dataIn=b'\x02\x01\x04\x03\x06\x05\x08\x07\x04\x00\x05\x03\x82\x01\x00\x00Ch\n\x00\xd6\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xee5\x00\x00)\x01\x00\x00\xf19\x00\x00\x03\x002\x11\x07\x00\x00\x00x\x00\x00\x00\x00\x00\x00\x00\x92\x0b\x0f>%\x9fG?\x90\xc4\xdc\xbd\xd8d\x18\xbd\x86\xb1\x19\xbf^\xeb(\xbe\n[L=\x0cgN\xbe\xe9:\xfe\xbd<\x82\xc8?Q|F\xbd\xddyI\xbdZ\xd3\xc4\xbcQ|F\xbd\x14h9@\x1cu\x9f\xbd\r\xc0=\xbd\xddyI\xbd\x1cu\x9f\xbd\xd4\xbd8@\x1f\xef\xe7\xbcX\xd3\xc4\xbc\r\xc0=\xbd\x1f\xef\xe7\xbc\xfc!\xc3?\x00\x00@@\xd9\xef\x7f?'
+    #
+    # magic, version, packetLength, platform, frameNum, subFrameNum, chirpMargin, frameMargin, uartSentTime, trackProcessTime, numTLVs, checksum = struct.unpack('Q9I2H', dataIn[:48])
+    # print (magic,version,packetLength,platform,frameNum,subFrameNum)
+    # print(len(dataIn))
+    # dataIn = dataIn[48:]
+    # print("numTLVs:", numTLVs)
