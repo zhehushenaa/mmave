@@ -393,7 +393,13 @@ def senddataweb():
     Time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 
     msg= {
-        "json":"11",
+            "AuthWfpUser": "klwab1iqcl38rf5ggxquku4lx",
+            "AuthTimeStamp": "7st4nhn7l6fd26a6yzdmp23uh",
+            "AuthSign": "6137c30fe9b7b3adfb5da9fccf6383bcb387f3897ca0259651ee58b02d33738e1c60e95c7343fdb6703e116e611ee1d9659a608595ad615ed3065441c4cd2d8a",
+            "EquipmentId": "12345678",
+            "EquipmentType": "1",
+            "AlarmStatus": "1",
+            "AlarmTime": Time
     }
     js = json.dumps(msg)
 
@@ -563,6 +569,7 @@ if __name__ == '__main__':
     poszlist=[]
     velzlist=[]
     acczlist=[]
+    pmlist=[]
 
     # if uartCom.isOpen():
     #      print ("uartcom open success!")
@@ -578,7 +585,10 @@ if __name__ == '__main__':
             updatey = []
 
             # parserdata()
-            pm=parserdata()
+            for i in range(10):
+                pm=parserdata()
+                pmlist.append(pm)
+            fall_detection()
 
             # print(time.strftime("%Y-%m-%d-%H_%M_%S", time.localtime()))
             #
