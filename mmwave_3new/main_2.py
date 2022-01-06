@@ -384,8 +384,8 @@ if __name__ == '__main__':
     # serial = serial.Serial('COM10', 921600, timeout=0.5) #/dev/ttyUSB0
     # dataCom = serial.Serial('/dev/ttyACM1', 921600,parity=serial.PARITY_NONE,stopbits=serial.STOPBITS_ONE,timeout=0.1)
     # uartCom = serial.Serial('/dev/ttyACM0', 115200,parity=serial.PARITY_NONE,stopbits=serial.STOPBITS_ONE,timeout=0.2)
-    dataCom = serial.Serial('COM10', 115200,parity=serial.PARITY_NONE,stopbits=serial.STOPBITS_ONE,timeout=0.05)
-    uartCom = serial.Serial('COM11', 115200,parity=serial.PARITY_NONE,stopbits=serial.STOPBITS_ONE,timeout=0.2)
+    # dataCom = serial.Serial('COM10', 115200,parity=serial.PARITY_NONE,stopbits=serial.STOPBITS_ONE,timeout=0.05)
+    # uartCom = serial.Serial('COM11', 115200,parity=serial.PARITY_NONE,stopbits=serial.STOPBITS_ONE,timeout=0.2)
     alarm = 0
     peoplep = 0
     nopeopletime = 0
@@ -397,22 +397,22 @@ if __name__ == '__main__':
     t1 = threading.Thread(target=sendheartbeat)
     t2 = threading.Thread(target=senddata)
 
-
+    t1.start()
 
     # if uartCom.isOpen():
     #      print ("uartcom open success!")
     #      sendCfg()
     # else:
     #      print ("uartcom open failed ")
-
-    # senddataweb_test()
-    if dataCom.isOpen() :
-        print(" datacom open success!")
-        t1.start()
-        t2.start()
-
-    else :
-        print(" datacom open failed!")
+    #
+    # # senddataweb_test()
+    # if dataCom.isOpen() :
+    #     print(" datacom open success!")
+    #     # t1.start()
+    #     # t2.start()
+    #
+    # else :
+    #     print(" datacom open failed!")
 
 
 

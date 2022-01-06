@@ -41,3 +41,5 @@
 {'AuthWfpUser': '3', 'AuthTimeStamp': '2', 'AuthSign': '1', 'EquipmentId': '12345678', 'EquipmentType': '1', 'EquipmentStatus': '1', 'peoplecounting': '1', 'CreationTime': '2021-12-16 15:51:11'}
 {'AuthWfpUser': '3', 'AuthTimeStamp': '2', 'AuthSign': '1', 'EquipmentId': '12345678', 'EquipmentType': '1', 'EquipmentStatus': '1', 'peoplecounting': '1', 'CreationTime': '2021-12-16 15:51:17'}
 {'AuthWfpUser': '3', 'AuthTimeStamp': '2', 'AuthSign': '1', 'EquipmentId': '12345678', 'EquipmentType': '1', 'EquipmentStatus': '1', 'peoplecounting': '1', 'CreationTime': '2021-12-16 15:51:22'}
+{'AuthWfpUser': '3', 'AuthTimeStamp': '2', 'AuthSign': '1', 'EquipmentId': '12345678', 'EquipmentType': '1', 'EquipmentStatus': '1', 'peoplecounting': '1', 'CreationTime': '2021-12-20 15:25:27'}
+{'AuthWfpUser': '3', 'AuthTimeStamp': '2', 'AuthSign': '1', 'EquipmentId': '12345678', 'EquipmentType': '1', 'EquipmentStatus': '1', 'peoplecounting': '1', 'CreationTime': '2021-12-20 15:25:32'}

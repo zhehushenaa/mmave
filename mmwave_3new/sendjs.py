@@ -1,60 +1,70 @@
 import serial
 import time
+import requests
+
+import requests
+import json
 
 
-def sendCfg():
-    with open('ISK_6m_default.cfg', 'r') as cfg:
-        for line in cfg:
-            time.sleep(.1)
-            uartCom.write(line.encode())
-            ack = uartCom.readline()
-            #print("m1")
-            print(ack)
-            #print("m2")
-            ack = uartCom.readline()
-            print(ack)
-            #print("m3")
-    time.sleep(3)
-    uartCom.reset_input_buffer()
-    uartCom.close()
+# -*- coding:utf-8 -*-
+#带参数的get
 
 
+import json
 
-def parserdata():
-    numBytes = 4666
-    tlvHeaderLength = 8
-    headerLength = 48
-    # set_output_buffer()
-#     print("parserdata")
+url = "http://radar.kinsol.net/api/handle?equipmentId=12345678"
+url="http://radar.kinsol.net/api/handle"
+params = {
+"equipmentId":"12345678",
+}
+r = requests.get(url=url,params=params)
+print(r.text)
 
-    dataIn = dataCom.read(numBytes)
-    dataCom.reset_input_buffer()
-    return  dataIn
 
-if __name__ == '__main__':
-
-    # serial = serial.Serial('COM10', 921600, timeout=0.5) #/dev/ttyUSB0
-    # dataCom = serial.Serial('/dev/ttyACM1', 921600,parity=serial.PARITY_NONE,stopbits=serial.STOPBITS_ONE,timeout=0.1)
-    # uartCom = serial.Serial('/dev/ttyACM0', 115200,parity=serial.PARITY_NONE,stopbits=serial.STOPBITS_ONE,timeout=0.2)
-    dataCom = serial.Serial('COM13', 921600, parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, timeout=0.1)
-    uartCom = serial.Serial('COM12', 115200, parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, timeout=0.2)
-    poszlist = []
-    velzlist = []
-    acczlist = []
-    numBytes = 4666
-    #
-    # if uartCom.isOpen():
-    #     print("uartcom open success!")
-    #     sendCfg()
-    # else:
-    #     print("uartcom open failed ")
+def sendheartbeat():
+    hburl = "http://radar.kinsol.net/api/heartbeat"
 
     while True:
+        url = 'http://quan.suning.com/getSysTime.do'
+        res = requests.get(url).text
+        # print(res)
+        j = json.loads(res)
+        t2_date = j['sysTime2'].split()[0]  # 日期
+        t2_time = j['sysTime2'].split()[1]  # 时间
+        time = t2_date + ' ' + t2_time
+        msg = {
+            "AuthWfpUser": "3",
+            "AuthTimeStamp": "2",
+            "AuthSign": "1",
+            "EquipmentId": "12345678",
+            "EquipmentType": "1",
+            "EquipmentStatus": "1",
+            "peoplecounting": "1",
+            "CreationTime": time
+        }
 
-        # set_output_buffer()
-        #     print("parserdata")
+        # with open("heatbeat.log", "a") as f:
+        # f.write(str(msg))
+        # f.write("\n")
+        js = json.dumps(msg)
 
-        dataIn = dataCom.read(numBytes)
-        dataCom.reset_input_buffer()
-        print (dataIn)
-        print(time.strftime("%Y-%m-%d-%H_%M_%S", time.localtime()))
+        response = requests.post(hburl, data=js)
+        print(msg)
+        rescode = response.text
+        rescode = rescode[8:11]
+        if rescode == "200":
+
+            print("发送心跳成功！")
+        else:
+            print("发送未成功！")
+
+            # break
+
+        time.sleep(5)
+# if __name__ == '__main__':
+#     data = {
+#         'equipmentId':"12345678",
+#         'AlarmStatus': '0'
+#     }
+#     r = requests.get("http://radar.kinsol.net/api/handle?equipmentId=12345678", params=data)
+#     print(r.text)
